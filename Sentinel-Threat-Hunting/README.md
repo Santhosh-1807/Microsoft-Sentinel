@@ -44,3 +44,17 @@ The threat hunting process follows these steps:
 ```kusto
 SigninLogs
 | take 10
+
+### 2.Investigate Failed Sign-Ins
+
+SigninLogs
+| where ResultType != "0"
+| project TimeGenerated, UserPrincipalName, IPAddress, ResultType
+| order by TimeGenerated desc
+
+###3.Identify Users with Repeated Failed Sign-Ins
+
+SigninLogs
+| where ResultType != "0"
+| summarize FailedAttempts = count() by UserPrincipalName
+| order by FailedAttempts desc
